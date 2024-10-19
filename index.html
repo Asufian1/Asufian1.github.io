@@ -147,10 +147,27 @@
 
             // Update player position
             if (player) {
-                if (moveForward) player.position.z -= 0.1;
-                if (moveBackward) player.position.z += 0.1;
-                if (moveLeft) player.position.x -= 0.1;
-                if (moveRight) player.position.x += 0.1;
+                let moved = false;
+                if (moveForward) {
+                    player.position.z -= 0.1;
+                    player.rotation.y = Math.PI;
+                    moved = true;
+                }
+                if (moveBackward) {
+                    player.position.z += 0.1;
+                    player.rotation.y = 0;
+                    moved = true;
+                }
+                if (moveLeft) {
+                    player.position.x -= 0.1;
+                    player.rotation.y = Math.PI / 2;
+                    moved = true;
+                }
+                if (moveRight) {
+                    player.position.x += 0.1;
+                    player.rotation.y = -Math.PI / 2;
+                    moved = true;
+                }
 
                 if (jump) {
                     velocityY = 0.2;
