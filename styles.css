@@ -85,7 +85,7 @@ body {
 
 /* Button Styles */
 .cta-button {
-    background: hsl(340deg 100% 32%);
+    background: #007BFF;
     border-radius: 12px;
     border: none;
     padding: 0;
@@ -94,6 +94,22 @@ body {
     transition: background 0.3s;
     position: relative;
     overflow: hidden;
+    text-decoration: none;
+}
+
+.cta-button .front {
+    display: block;
+    padding: 15px 30px;
+    border-radius: 12px;
+    font-size: 1.25rem;
+    background: #0056b3;
+    color: white;
+    transform: translateY(-6px);
+    transition: transform 0.2s;
+}
+
+.cta-button:active .front {
+    transform: translateY(-2px);
 }
 
 .cta-button .front {
