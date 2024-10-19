@@ -90,8 +90,9 @@ body {
     padding: 0;
     cursor: pointer;
     outline-offset: 4px;
-    display: inline-block;
     transition: background 0.3s;
+    position: relative;
+    overflow: hidden;
 }
 
 .cta-button .front {
@@ -102,6 +103,61 @@ body {
     background: hsl(345deg 100% 47%);
     color: white;
     transform: translateY(-6px);
+    transition: transform 0.2s;
+}
+
+.cta-button:active .front {
+    transform: translateY(-2px);
+}
+
+.cta-button {
+    background: hsl(340deg 100% 32%);
+    border-radius: 12px;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    outline-offset: 4px;
+    transition: background 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-button .front {
+    display: block;
+    padding: 15px 30px;
+    border-radius: 12px;
+    font-size: 1.25rem;
+    background: hsl(345deg 100% 47%);
+    color: white;
+    transform: translateY(-6px);
+    transition: transform 0.2s;
+}
+
+.cta-button:active .front {
+    transform: translateY(-2px);
+}
+
+.cta-button {
+    background: hsl(340deg 100% 32%);
+    border-radius: 12px;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    outline-offset: 4px;
+    transition: background 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-button .front {
+    display: block;
+    padding: 15px 30px;
+    border-radius: 12px;
+    font-size: 1.25rem;
+    background: hsl(345deg 100% 47%);
+    color: white;
+    transform: translateY(-6px);
+    transition: transform 0.2s;
 }
 
 .cta-button:active .front {
@@ -265,19 +321,76 @@ button.cta-button {
     cursor: pointer;
     outline-offset: 4px;
     transition: background 0.3s;
+    position: relative;
+    overflow: hidden;
 }
 
-button.cta-button .front {
+.cta-button .front {
     display: block;
-    padding: 15px;
+    padding: 15px 30px;
     border-radius: 12px;
     font-size: 1.25rem;
     background: hsl(345deg 100% 47%);
     color: white;
     transform: translateY(-6px);
+    transition: transform 0.2s;
 }
 
-button.cta-button:active .front {
+.cta-button:active .front {
+    transform: translateY(-2px);
+}
+
+button.cta-button {
+    background: hsl(340deg 100% 32%);
+    border-radius: 12px;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    outline-offset: 4px;
+    transition: background 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-button .front {
+    display: block;
+    padding: 15px 30px;
+    border-radius: 12px;
+    font-size: 1.25rem;
+    background: hsl(345deg 100% 47%);
+    color: white;
+    transform: translateY(-6px);
+    transition: transform 0.2s;
+}
+
+.cta-button:active .front {
+    transform: translateY(-2px);
+}
+
+button.cta-button {
+    background: hsl(340deg 100% 32%);
+    border-radius: 12px;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    outline-offset: 4px;
+    transition: background 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-button .front {
+    display: block;
+    padding: 15px 30px;
+    border-radius: 12px;
+    font-size: 1.25rem;
+    background: hsl(345deg 100% 47%);
+    color: white;
+    transform: translateY(-6px);
+    transition: transform 0.2s;
+}
+
+.cta-button:active .front {
     transform: translateY(-2px);
 }
 
