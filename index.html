@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Resume Game - Simplified Version</title>
+    <title>3D Resume Game - Cat Adventure</title>
     <link rel="stylesheet" href="styles.css">
     <style>
         body {
@@ -16,9 +16,8 @@
     <canvas id="gameCanvas"></canvas>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cannon-es/0.18.0/cannon-es.js"></script>
     <script>
-        console.log("Initializing scene...");
-
         // Set up the scene, camera, and renderer
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -26,34 +25,34 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        console.log("Scene initialized.");
+        // Set up physics world
+        const world = new CANNON.World();
+        world.gravity.set(0, -9.82, 0);
 
         // Add lighting
-        const ambientLight = new THREE.AmbientLight(0x404040, 2);
+        const ambientLight = new THREE.AmbientLight(0x404040, 2); // Soft white light
         scene.add(ambientLight);
         const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
         directionalLight.position.set(5, 10, 7.5).normalize();
         scene.add(directionalLight);
 
         // Load player model (cat)
-        console.log("Loading player model...");
         const loader = new THREE.GLTFLoader();
         let player;
-        loader.load(
-            'https://threejs.org/examples/models/gltf/Duck/glTF/Duck.gltf',
-            function (gltf) {
+        let playerBody;
+        loader.load('https://threejs.org/examples/models/gltf/Duck/glTF/Duck.gltf', function(gltf) {
             player = gltf.scene;
             player.scale.set(0.5, 0.5, 0.5);
             player.position.set(0, 1, 0);
             scene.add(player);
-            console.log("Player model loaded successfully.");
-            },
-        undefined,
-        function (error) {
-            console.error("Error loading model: ", error);
-            }
-        );
 
+            // Add physics body for the player
+            const playerShape = new CANNON.Sphere(0.5);
+            playerBody = new CANNON.Body({ mass: 1 });
+            playerBody.addShape(playerShape);
+            playerBody.position.set(0, 1, 0);
+            world.addBody(playerBody);
+        });
 
         // Create ground
         const groundGeometry = new THREE.PlaneGeometry(100, 100);
@@ -62,17 +61,114 @@
         ground.rotation.x = -Math.PI / 2;
         scene.add(ground);
 
+        // Add physics body for ground
+        const groundShape = new CANNON.Plane();
+        const groundBody = new CANNON.Body({ mass: 0 });
+        groundBody.addShape(groundShape);
+        groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
+        world.addBody(groundBody);
+
+        // Add obstacles
+        const obstacles = [];
+        const obstacleMaterial = new THREE.MeshPhongMaterial({ color: 0x8B0000 });
+        for (let i = 0; i < 10; i++) {
+            const obstacleGeometry = new THREE.BoxGeometry(1, 1, 1);
+            const obstacle = new THREE.Mesh(obstacleGeometry, obstacleMaterial);
+            obstacle.position.set(i * 5 + 5, 0.5, Math.random() * 10 - 5);
+            scene.add(obstacle);
+            obstacles.push(obstacle);
+
+            const obstacleShape = new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5));
+            const obstacleBody = new CANNON.Body({ mass: 0 });
+            obstacleBody.addShape(obstacleShape);
+            obstacleBody.position.set(obstacle.position.x, obstacle.position.y, obstacle.position.z);
+            world.addBody(obstacleBody);
+        }
+
+        // Create platforms representing sections of resume
+        const sections = [
+            { name: "Education", color: 0x4682B4, position: { x: 20, y: 0.1, z: -5 } },
+            { name: "Skills", color: 0xFFD700, position: { x: 40, y: 0.1, z: 5 } },
+            { name: "Experience", color: 0xFF6347, position: { x: 60, y: 0.1, z: -5 } },
+        ];
+
+        sections.forEach((section) => {
+            const platformGeometry = new THREE.BoxGeometry(5, 0.2, 5);
+            const platformMaterial = new THREE.MeshPhongMaterial({ color: section.color });
+            const platform = new THREE.Mesh(platformGeometry, platformMaterial);
+            platform.position.set(section.position.x, section.position.y, section.position.z);
+            scene.add(platform);
+
+            // Add physics body for platform
+            const platformShape = new CANNON.Box(new CANNON.Vec3(2.5, 0.1, 2.5));
+            const platformBody = new CANNON.Body({ mass: 0 });
+            platformBody.addShape(platformShape);
+            platformBody.position.set(section.position.x, section.position.y, section.position.z);
+            world.addBody(platformBody);
+
+            // Create label
+            const loader = new THREE.FontLoader();
+            loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function (font) {
+                const textGeometry = new THREE.TextGeometry(section.name, {
+                    font: font,
+                    size: 0.5,
+                    height: 0.1,
+                });
+                const textMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
+                const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+                textMesh.position.set(section.position.x - 1.5, section.position.y + 1, section.position.z);
+                scene.add(textMesh);
+            });
+        });
+
         // Camera positioning
         camera.position.set(0, 5, 10);
         camera.lookAt(0, 0, 0);
 
-        // Animation loop
+        // Player controls
+        let moveForward = false;
+        let moveBackward = false;
+        let moveLeft = false;
+        let moveRight = false;
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowUp' || event.key === 'w') moveForward = true;
+            if (event.key === 'ArrowDown' || event.key === 's') moveBackward = true;
+            if (event.key === 'ArrowLeft' || event.key === 'a') moveLeft = true;
+            if (event.key === 'ArrowRight' || event.key === 'd') moveRight = true;
+        });
+
+        document.addEventListener('keyup', (event) => {
+            if (event.key === 'ArrowUp' || event.key === 'w') moveForward = false;
+            if (event.key === 'ArrowDown' || event.key === 's') moveBackward = false;
+            if (event.key === 'ArrowLeft' || event.key === 'a') moveLeft = false;
+            if (event.key === 'ArrowRight' || event.key === 'd') moveRight = false;
+        });
+
+        // Game loop
         function animate() {
             requestAnimationFrame(animate);
-            if (player) {
-                // Simple rotation for debugging visibility
-                player.rotation.y += 0.01;
+
+            // Update physics world
+            world.step(1 / 60);
+
+            // Update player position
+            if (player && playerBody) {
+                if (moveForward) playerBody.velocity.z = -5;
+                if (moveBackward) playerBody.velocity.z = 5;
+                if (moveLeft) playerBody.velocity.x = -5;
+                if (moveRight) playerBody.velocity.x = 5;
+
+                if (!moveForward && !moveBackward) playerBody.velocity.z = 0;
+                if (!moveLeft && !moveRight) playerBody.velocity.x = 0;
+
+                player.position.copy(playerBody.position);
+                player.quaternion.copy(playerBody.quaternion);
+
+                camera.position.set(player.position.x, player.position.y + 5, player.position.z + 10);
+                camera.lookAt(player.position);
             }
+
             renderer.render(scene, camera);
         }
         animate();
