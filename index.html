@@ -148,24 +148,25 @@
             // Update player position
             if (player) {
                 let moved = false;
+                const rotationSpeed = 0.1;
                 if (moveForward) {
                     player.position.z -= 0.1;
-                    player.rotation.y = Math.PI;
+                    player.rotation.y = THREE.MathUtils.lerp(player.rotation.y, Math.PI, rotationSpeed);
                     moved = true;
                 }
                 if (moveBackward) {
                     player.position.z += 0.1;
-                    player.rotation.y = 0;
+                    player.rotation.y = THREE.MathUtils.lerp(player.rotation.y, 0, rotationSpeed);
                     moved = true;
                 }
                 if (moveLeft) {
                     player.position.x -= 0.1;
-                    player.rotation.y = Math.PI / 2;
+                    player.rotation.y = THREE.MathUtils.lerp(player.rotation.y, Math.PI / 2, rotationSpeed);
                     moved = true;
                 }
                 if (moveRight) {
                     player.position.x += 0.1;
-                    player.rotation.y = -Math.PI / 2;
+                    player.rotation.y = THREE.MathUtils.lerp(player.rotation.y, -Math.PI / 2, rotationSpeed);
                     moved = true;
                 }
 
