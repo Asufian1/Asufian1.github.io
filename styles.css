@@ -84,7 +84,7 @@ body {
 }
 
 /* Button Styles */
-.pushable {
+.pushable, .cta-button {
     background: hsl(340deg 100% 32%);
     border-radius: 12px;
     border: none;
@@ -94,9 +94,13 @@ body {
     transition: background 0.3s;
     position: relative;
     overflow: hidden;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.pushable .front {
+.pushable .front, .cta-button .front {
     display: block;
     padding: 15px 30px;
     border-radius: 12px;
@@ -107,7 +111,7 @@ body {
     transition: transform 0.2s;
 }
 
-.pushable:active .front {
+.pushable:active .front, .cta-button:active .front {
     transform: translateY(-2px);
 }
 
@@ -258,6 +262,33 @@ input, textarea {
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 1em;
+}
+
+button.cta-button {
+    background: hsl(340deg 100% 32%);
+    border-radius: 12px;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    outline-offset: 4px;
+    transition: background 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+button.cta-button .front {
+    display: block;
+    padding: 15px;
+    border-radius: 12px;
+    font-size: 1.25rem;
+    background: hsl(345deg 100% 47%);
+    color: white;
+    transform: translateY(-6px);
+    transition: transform 0.2s;
+}
+
+button.cta-button:active .front {
+    transform: translateY(-2px);
 }
 
 /* Footer */
