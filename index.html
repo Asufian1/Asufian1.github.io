@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Resume Game - Character Adventure</title>
+    <title>3D Resume Game - Moon Adventure</title>
     <link rel="stylesheet" href="styles.css">
     <style>
         body {
             margin: 0;
             overflow: hidden;
+            background: black;
         }
     </style>
 </head>
@@ -16,9 +17,18 @@
     <canvas id="gameCanvas"></canvas>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/textures/TextureLoader.js"></script>
     <script>
         // Set up the scene, camera, and renderer
         const scene = new THREE.Scene();
+        scene.background = new THREE.CubeTextureLoader()
+            .setPath('https://threejs.org/examples/textures/cube/space/')
+            .load([
+                'px.jpg', 'nx.jpg',
+                'py.jpg', 'ny.jpg',
+                'pz.jpg', 'nz.jpg'
+            ]);
+        
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('gameCanvas') });
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -26,10 +36,10 @@
         renderer.shadowMap.enabled = true;
 
         // Add lighting
-        const ambientLight = new THREE.AmbientLight(0x404040, 2); // Soft white light
+        const ambientLight = new THREE.AmbientLight(0x404040, 0.8); // Soft ambient light for space
         scene.add(ambientLight);
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-        directionalLight.position.set(5, 10, 7.5).normalize();
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+        directionalLight.position.set(10, 20, 10);
         directionalLight.castShadow = true;
         scene.add(directionalLight);
 
@@ -62,17 +72,20 @@
             console.error('Error loading model:', error);
         });
 
-        // Create ground
+        // Create ground with moon texture
         const groundGeometry = new THREE.PlaneGeometry(100, 100);
-        const groundMaterial = new THREE.MeshPhongMaterial({ color: 0x228B22 });
+        const groundTexture = new THREE.TextureLoader().load('https://threejs.org/examples/textures/moon_terrain.jpg');
+        groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
+        groundTexture.repeat.set(10, 10);
+        const groundMaterial = new THREE.MeshPhongMaterial({ map: groundTexture });
         const ground = new THREE.Mesh(groundGeometry, groundMaterial);
         ground.rotation.x = -Math.PI / 2;
         ground.receiveShadow = true;
         scene.add(ground);
 
-        // Add obstacles
+        // Add obstacles with moon rock appearance
         const obstacles = [];
-        const obstacleMaterial = new THREE.MeshPhongMaterial({ color: 0x8B0000 });
+        const obstacleMaterial = new THREE.MeshPhongMaterial({ color: 0x888888 });
         for (let i = 0; i < 10; i++) {
             const obstacleGeometry = new THREE.BoxGeometry(1, 1, 1);
             const obstacle = new THREE.Mesh(obstacleGeometry, obstacleMaterial);
@@ -166,7 +179,7 @@
                 }
                 if (moveRight) {
                     player.position.x += 0.1;
-                    player.rotation.y = THREE.MathUtils.lerp(player.rotation.y, Math.PI / 2, rotationSpeed);
+                    player.rotation.y = THREE.MathUtils.lerp(player.rotation.y, -Math.PI / 2, rotationSpeed);
                     moved = true;
                 }
 
