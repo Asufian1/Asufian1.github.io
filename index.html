@@ -1,4 +1,4 @@
-\<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -15,7 +15,6 @@
 <body>
     <canvas id="gameCanvas"></canvas>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cannon-es/0.18.0/cannon-es.js"></script>
     <script>
         // Set up the scene, camera, and renderer
         const scene = new THREE.Scene();
@@ -23,10 +22,6 @@
         const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('gameCanvas') });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
-
-        // Set up physics world
-        const world = new CANNON.World();
-        world.gravity.set(0, -9.82, 0);
 
         // Add lighting
         const ambientLight = new THREE.AmbientLight(0x404040, 2); // Soft white light
@@ -37,19 +32,11 @@
 
         // Create player model (simple vehicle as a cube)
         let player;
-        let playerBody;
         const playerGeometry = new THREE.BoxGeometry(2, 1, 4);
         const playerMaterial = new THREE.MeshPhongMaterial({ color: 0x0000ff });
         player = new THREE.Mesh(playerGeometry, playerMaterial);
         player.position.set(0, 1, 0);
         scene.add(player);
-
-        // Add physics body for the player
-        const playerShape = new CANNON.Box(new CANNON.Vec3(1, 0.5, 2));
-        playerBody = new CANNON.Body({ mass: 1 });
-        playerBody.addShape(playerShape);
-        playerBody.position.set(0, 1, 0);
-        world.addBody(playerBody);
 
         // Create ground
         const groundGeometry = new THREE.PlaneGeometry(100, 100);
@@ -57,13 +44,6 @@
         const ground = new THREE.Mesh(groundGeometry, groundMaterial);
         ground.rotation.x = -Math.PI / 2;
         scene.add(ground);
-
-        // Add physics body for ground
-        const groundShape = new CANNON.Plane();
-        const groundBody = new CANNON.Body({ mass: 0 });
-        groundBody.addShape(groundShape);
-        groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
-        world.addBody(groundBody);
 
         // Add obstacles
         const obstacles = [];
@@ -74,12 +54,6 @@
             obstacle.position.set(i * 5 + 5, 0.5, Math.random() * 10 - 5);
             scene.add(obstacle);
             obstacles.push(obstacle);
-
-            const obstacleShape = new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5));
-            const obstacleBody = new CANNON.Body({ mass: 0 });
-            obstacleBody.addShape(obstacleShape);
-            obstacleBody.position.set(obstacle.position.x, obstacle.position.y, obstacle.position.z);
-            world.addBody(obstacleBody);
         }
 
         // Create platforms representing sections of resume
@@ -95,13 +69,6 @@
             const platform = new THREE.Mesh(platformGeometry, platformMaterial);
             platform.position.set(section.position.x, section.position.y, section.position.z);
             scene.add(platform);
-
-            // Add physics body for platform
-            const platformShape = new CANNON.Box(new CANNON.Vec3(2.5, 0.1, 2.5));
-            const platformBody = new CANNON.Body({ mass: 0 });
-            platformBody.addShape(platformShape);
-            platformBody.position.set(section.position.x, section.position.y, section.position.z);
-            world.addBody(platformBody);
 
             // Create label
             const loader = new THREE.FontLoader();
@@ -146,21 +113,12 @@
         function animate() {
             requestAnimationFrame(animate);
 
-            // Update physics world
-            world.step(1 / 60);
-
             // Update player position
-            if (player && playerBody) {
-                if (moveForward) playerBody.velocity.z = -5;
-                if (moveBackward) playerBody.velocity.z = 5;
-                if (moveLeft) playerBody.velocity.x = -5;
-                if (moveRight) playerBody.velocity.x = 5;
-
-                if (!moveForward && !moveBackward) playerBody.velocity.z = 0;
-                if (!moveLeft && !moveRight) playerBody.velocity.x = 0;
-
-                player.position.copy(playerBody.position);
-                player.quaternion.copy(playerBody.quaternion);
+            if (player) {
+                if (moveForward) player.position.z -= 0.1;
+                if (moveBackward) player.position.z += 0.1;
+                if (moveLeft) player.position.x -= 0.1;
+                if (moveRight) player.position.x += 0.1;
 
                 camera.position.set(player.position.x, player.position.y + 5, player.position.z + 10);
                 camera.lookAt(player.position);
