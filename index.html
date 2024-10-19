@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Resume Game - Vehicle Adventure</title>
+    <title>3D Resume Game - Character Adventure</title>
     <link rel="stylesheet" href="styles.css">
     <style>
         body {
@@ -15,6 +15,7 @@
 <body>
     <canvas id="gameCanvas"></canvas>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script>
         // Set up the scene, camera, and renderer
         const scene = new THREE.Scene();
@@ -22,27 +23,51 @@
         const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('gameCanvas') });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
+        renderer.shadowMap.enabled = true;
 
         // Add lighting
         const ambientLight = new THREE.AmbientLight(0x404040, 2); // Soft white light
         scene.add(ambientLight);
         const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
         directionalLight.position.set(5, 10, 7.5).normalize();
+        directionalLight.castShadow = true;
         scene.add(directionalLight);
 
-        // Create player model (simple vehicle as a cube)
+        // Load character model
+        const loader = new THREE.GLTFLoader();
         let player;
-        const playerGeometry = new THREE.BoxGeometry(2, 1, 4);
-        const playerMaterial = new THREE.MeshPhongMaterial({ color: 0x0000ff });
-        player = new THREE.Mesh(playerGeometry, playerMaterial);
-        player.position.set(0, 1, 0);
-        scene.add(player);
+        let mixer;
+
+        loader.load('https://threejs.org/examples/models/gltf/RobotExpressive/RobotExpressive.glb', function(gltf) {
+            player = gltf.scene;
+            player.scale.set(0.5, 0.5, 0.5);
+            player.position.set(0, 1, 0);
+            player.traverse((node) => {
+                if (node.isMesh) {
+                    node.castShadow = true;
+                    node.receiveShadow = true;
+                }
+            });
+            scene.add(player);
+
+            // Set up animations
+            mixer = new THREE.AnimationMixer(player);
+            const animations = gltf.animations;
+            if (animations && animations.length) {
+                animations.forEach((clip) => {
+                    mixer.clipAction(clip).play();
+                });
+            }
+        }, undefined, function (error) {
+            console.error('Error loading model:', error);
+        });
 
         // Create ground
         const groundGeometry = new THREE.PlaneGeometry(100, 100);
         const groundMaterial = new THREE.MeshPhongMaterial({ color: 0x228B22 });
         const ground = new THREE.Mesh(groundGeometry, groundMaterial);
         ground.rotation.x = -Math.PI / 2;
+        ground.receiveShadow = true;
         scene.add(ground);
 
         // Add obstacles
@@ -52,6 +77,8 @@
             const obstacleGeometry = new THREE.BoxGeometry(1, 1, 1);
             const obstacle = new THREE.Mesh(obstacleGeometry, obstacleMaterial);
             obstacle.position.set(i * 5 + 5, 0.5, Math.random() * 10 - 5);
+            obstacle.castShadow = true;
+            obstacle.receiveShadow = true;
             scene.add(obstacle);
             obstacles.push(obstacle);
         }
@@ -68,6 +95,7 @@
             const platformMaterial = new THREE.MeshPhongMaterial({ color: section.color });
             const platform = new THREE.Mesh(platformGeometry, platformMaterial);
             platform.position.set(section.position.x, section.position.y, section.position.z);
+            platform.receiveShadow = true;
             scene.add(platform);
 
             // Create label
@@ -81,6 +109,7 @@
                 const textMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
                 const textMesh = new THREE.Mesh(textGeometry, textMaterial);
                 textMesh.position.set(section.position.x - 1.5, section.position.y + 1, section.position.z);
+                textMesh.castShadow = true;
                 scene.add(textMesh);
             });
         });
@@ -94,12 +123,15 @@
         let moveBackward = false;
         let moveLeft = false;
         let moveRight = false;
+        let jump = false;
+        let velocityY = 0;
 
         document.addEventListener('keydown', (event) => {
             if (event.key === 'ArrowUp' || event.key === 'w') moveForward = true;
             if (event.key === 'ArrowDown' || event.key === 's') moveBackward = true;
             if (event.key === 'ArrowLeft' || event.key === 'a') moveLeft = true;
             if (event.key === 'ArrowRight' || event.key === 'd') moveRight = true;
+            if (event.key === ' ' && player && player.position.y <= 1) jump = true;
         });
 
         document.addEventListener('keyup', (event) => {
@@ -120,9 +152,24 @@
                 if (moveLeft) player.position.x -= 0.1;
                 if (moveRight) player.position.x += 0.1;
 
+                if (jump) {
+                    velocityY = 0.2;
+                    jump = false;
+                }
+
+                velocityY -= 0.01; // Gravity
+                player.position.y += velocityY;
+
+                if (player.position.y < 1) {
+                    player.position.y = 1;
+                    velocityY = 0;
+                }
+
                 camera.position.set(player.position.x, player.position.y + 5, player.position.z + 10);
                 camera.lookAt(player.position);
             }
+
+            if (mixer) mixer.update(0.01);
 
             renderer.render(scene, camera);
         }
