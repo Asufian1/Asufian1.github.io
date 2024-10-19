@@ -84,8 +84,8 @@ body {
 }
 
 /* Button Styles */
-.cta-button {
-    background: #007BFF;
+.pushable {
+    background: hsl(340deg 100% 32%);
     border-radius: 12px;
     border: none;
     padding: 0;
@@ -94,25 +94,9 @@ body {
     transition: background 0.3s;
     position: relative;
     overflow: hidden;
-    text-decoration: none;
 }
 
-.cta-button .front {
-    display: block;
-    padding: 15px 30px;
-    border-radius: 12px;
-    font-size: 1.25rem;
-    background: #0056b3;
-    color: white;
-    transform: translateY(-6px);
-    transition: transform 0.2s;
-}
-
-.cta-button:active .front {
-    transform: translateY(-2px);
-}
-
-.cta-button .front {
+.pushable .front {
     display: block;
     padding: 15px 30px;
     border-radius: 12px;
@@ -123,7 +107,7 @@ body {
     transition: transform 0.2s;
 }
 
-.cta-button:active .front {
+.pushable:active .front {
     transform: translateY(-2px);
 }
 
@@ -274,33 +258,6 @@ input, textarea {
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 1em;
-}
-
-button.cta-button {
-    background: hsl(340deg 100% 32%);
-    border-radius: 12px;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    outline-offset: 4px;
-    transition: background 0.3s;
-    position: relative;
-    overflow: hidden;
-}
-
-button.cta-button .front {
-    display: block;
-    padding: 15px;
-    border-radius: 12px;
-    font-size: 1.25rem;
-    background: hsl(345deg 100% 47%);
-    color: white;
-    transform: translateY(-6px);
-    transition: transform 0.2s;
-}
-
-button.cta-button:active .front {
-    transform: translateY(-2px);
 }
 
 /* Footer */
