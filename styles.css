@@ -85,7 +85,7 @@ body {
 
 /* Button Styles */
 .pushable, .cta-button {
-    background: hsl(340deg 100% 32%);
+    background: hsl(210, 100%, 32%);
     border-radius: 12px;
     border: none;
     padding: 0;
