@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive 3D Game</title>
+    <title>3D Resume Game</title>
     <link rel="stylesheet" href="styles.css">
     <style>
         body {
@@ -15,6 +15,7 @@
 <body>
     <canvas id="gameCanvas"></canvas>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <script>
         // Set up the scene, camera, and renderer
         const scene = new THREE.Scene();
@@ -24,24 +25,87 @@
         document.body.appendChild(renderer.domElement);
 
         // Add lighting
-        const light = new THREE.DirectionalLight(0xffffff, 1);
-        light.position.set(5, 5, 5).normalize();
-        scene.add(light);
+        const ambientLight = new THREE.AmbientLight(0x404040, 2); // Soft white light
+        scene.add(ambientLight);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(5, 10, 7.5).normalize();
+        scene.add(directionalLight);
 
-        // Add a basic 3D object (a cube)
-        const geometry = new THREE.BoxGeometry();
-        const material = new THREE.MeshPhongMaterial({ color: 0x007bff });
-        const cube = new THREE.Mesh(geometry, material);
-        scene.add(cube);
+        // Create player (a simple sphere)
+        const playerGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+        const playerMaterial = new THREE.MeshPhongMaterial({ color: 0xff4500 });
+        const player = new THREE.Mesh(playerGeometry, playerMaterial);
+        player.position.set(0, 0.5, 0);
+        scene.add(player);
 
-        // Set camera position
-        camera.position.z = 5;
+        // Create ground
+        const groundGeometry = new THREE.PlaneGeometry(100, 100);
+        const groundMaterial = new THREE.MeshPhongMaterial({ color: 0x228B22 });
+        const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+        ground.rotation.x = -Math.PI / 2;
+        scene.add(ground);
 
-        // Animation loop
+        // Add obstacles and platforms
+        const obstacleGeometry = new THREE.BoxGeometry(1, 1, 1);
+        const obstacleMaterial = new THREE.MeshPhongMaterial({ color: 0x8B0000 });
+        const obstacle1 = new THREE.Mesh(obstacleGeometry, obstacleMaterial);
+        obstacle1.position.set(5, 0.5, 0);
+        scene.add(obstacle1);
+
+        const obstacle2 = new THREE.Mesh(obstacleGeometry, obstacleMaterial);
+        obstacle2.position.set(10, 0.5, 0);
+        scene.add(obstacle2);
+
+        const platformGeometry = new THREE.BoxGeometry(3, 0.2, 3);
+        const platformMaterial = new THREE.MeshPhongMaterial({ color: 0x4682B4 });
+        const platform = new THREE.Mesh(platformGeometry, platformMaterial);
+        platform.position.set(15, 0.1, 0);
+        scene.add(platform);
+
+        // Camera positioning
+        camera.position.set(0, 5, 10);
+        camera.lookAt(player.position);
+
+        // Player controls
+        let moveForward = false;
+        let moveBackward = false;
+        let jump = false;
+        let velocityY = 0;
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowUp' || event.key === 'w') moveForward = true;
+            if (event.key === 'ArrowDown' || event.key === 's') moveBackward = true;
+            if (event.key === ' ' && player.position.y <= 0.5) jump = true;
+        });
+
+        document.addEventListener('keyup', (event) => {
+            if (event.key === 'ArrowUp' || event.key === 'w') moveForward = false;
+            if (event.key === 'ArrowDown' || event.key === 's') moveBackward = false;
+        });
+
+        // Game loop
         function animate() {
             requestAnimationFrame(animate);
-            cube.rotation.x += 0.01;
-            cube.rotation.y += 0.01;
+
+            if (moveForward) player.position.z -= 0.1;
+            if (moveBackward) player.position.z += 0.1;
+
+            if (jump) {
+                velocityY = 0.2;
+                jump = false;
+            }
+
+            velocityY -= 0.01; // Gravity
+            player.position.y += velocityY;
+
+            if (player.position.y < 0.5) {
+                player.position.y = 0.5;
+                velocityY = 0;
+            }
+
+            camera.position.set(player.position.x, player.position.y + 5, player.position.z + 10);
+            camera.lookAt(player.position);
+
             renderer.render(scene, camera);
         }
         animate();
