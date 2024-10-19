@@ -166,7 +166,7 @@
                 }
                 if (moveRight) {
                     player.position.x += 0.1;
-                    player.rotation.y = THREE.MathUtils.lerp(player.rotation.y, -Math.PI / 2, rotationSpeed);
+                    player.rotation.y = THREE.MathUtils.lerp(player.rotation.y, Math.PI / 2, rotationSpeed);
                     moved = true;
                 }
 
