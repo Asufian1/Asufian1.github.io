@@ -265,7 +265,7 @@ input, textarea {
 }
 
 button.cta-button {
-    background: hsl(340deg 100% 32%);
+    background: hsl(210, 100%, 32%);
     border-radius: 12px;
     border: none;
     padding: 0;
@@ -274,6 +274,10 @@ button.cta-button {
     transition: background 0.3s;
     position: relative;
     overflow: hidden;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 button.cta-button .front {
@@ -281,7 +285,7 @@ button.cta-button .front {
     padding: 15px;
     border-radius: 12px;
     font-size: 1.25rem;
-    background: hsl(345deg 100% 47%);
+    background: hsl(221, 100%, 47%);
     color: white;
     transform: translateY(-6px);
     transition: transform 0.2s;
