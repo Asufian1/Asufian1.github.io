@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+\<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -15,7 +15,6 @@
 <body>
     <canvas id="gameCanvas"></canvas>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cannon-es/0.18.0/cannon-es.js"></script>
     <script>
         // Set up the scene, camera, and renderer
@@ -36,25 +35,21 @@
         directionalLight.position.set(5, 10, 7.5).normalize();
         scene.add(directionalLight);
 
-        // Load player model (vehicle)
-        const loader = new THREE.GLTFLoader();
+        // Create player model (simple vehicle as a cube)
         let player;
         let playerBody;
-        loader.load('https://threejs.org/examples/models/gltf/Vehicle/Vehicle.glb', function(gltf) {
-            player = gltf.scene;
-            player.scale.set(0.5, 0.5, 0.5);
-            player.position.set(0, 1, 0);
-            scene.add(player);
+        const playerGeometry = new THREE.BoxGeometry(2, 1, 4);
+        const playerMaterial = new THREE.MeshPhongMaterial({ color: 0x0000ff });
+        player = new THREE.Mesh(playerGeometry, playerMaterial);
+        player.position.set(0, 1, 0);
+        scene.add(player);
 
-            // Add physics body for the player
-            const playerShape = new CANNON.Box(new CANNON.Vec3(1, 0.5, 2));
-            playerBody = new CANNON.Body({ mass: 1 });
-            playerBody.addShape(playerShape);
-            playerBody.position.set(0, 1, 0);
-            world.addBody(playerBody);
-        }, undefined, function (error) {
-            console.error('Error loading model:', error);
-        });
+        // Add physics body for the player
+        const playerShape = new CANNON.Box(new CANNON.Vec3(1, 0.5, 2));
+        playerBody = new CANNON.Body({ mass: 1 });
+        playerBody.addShape(playerShape);
+        playerBody.position.set(0, 1, 0);
+        world.addBody(playerBody);
 
         // Create ground
         const groundGeometry = new THREE.PlaneGeometry(100, 100);
