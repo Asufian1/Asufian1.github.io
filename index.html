@@ -108,10 +108,11 @@
 						</article>
 						
 
+						
 						<!-- Contact -->
 						<article id="contact">
 							<h2 class="major">Contact</h2>
-							<form method="post" action="#">
+							<form id="contactForm" method="post" action="#" onsubmit="return validateForm()">
 								<div class="fields">
 									<div class="field half">
 										<label for="name">Name</label>
@@ -137,6 +138,29 @@
 								<li><a href="mailto:asufian1@umbc.edu" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
 							</ul>
 						</article>
+
+<!-- Add this JavaScript for form validation -->
+<script>
+function validateForm() {
+    var name = document.getElementById("name").value;
+    var email = document.getElementById("email").value;
+    var message = document.getElementById("message").value;
+    var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+
+    if (name == "" || email == "" || message == "") {
+        alert("Please fill out all fields (name, email, and message).");
+        return false;
+    }
+
+    if (!emailPattern.test(email)) {
+        alert("Please enter a valid email address.");
+        return false;
+    }
+
+    return true;
+}
+</script>
+
 
 								
 
