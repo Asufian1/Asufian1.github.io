@@ -45,15 +45,19 @@
         var name = document.getElementById("name").value;
         var email = document.getElementById("email").value;
         var message = document.getElementById("message").value;
+        var errorMessage = document.getElementById("error-message");
         var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 
+        // Clear previous error messages
+        errorMessage.innerHTML = "";
+
         if (name == "" || email == "" || message == "") {
-            alert("Please fill out all fields (name, email, and message).");
+            errorMessage.innerHTML = "Please fill out all fields (name, email, and message).";
             return false;
         }
 
         if (!emailPattern.test(email)) {
-            alert("Please enter a valid email address.");
+            errorMessage.innerHTML = "Please enter a valid email address.";
             return false;
         }
 

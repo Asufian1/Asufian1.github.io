@@ -109,10 +109,10 @@
 						
 
 						
-						<!-- Contact -->
 						<article id="contact">
 							<h2 class="major">Contact</h2>
-							<form id="contactForm" method="post" action="#" onsubmit="return validateForm()">
+							<div id="error-message" style="color: red;"></div> <!-- Error message container -->
+							<form id="contactForm" method="post" action="#">
 								<div class="fields">
 									<div class="field half">
 										<label for="name">Name</label>
@@ -132,12 +132,8 @@
 									<li><input type="reset" value="Reset" /></li>
 								</ul>
 							</form>
-							<ul class="icons">
-								<li><a href="https://github.com/Asufian1" class="icon brands fa-github" target="_blank"><span class="label">GitHub</span></a></li>
-								<li><a href="https://www.linkedin.com/in/abdullah-sufian-075363265/" class="icon brands fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
-								<li><a href="mailto:asufian1@umbc.edu" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
-							</ul>
 						</article>
+						
 
 <!-- Add this JavaScript for form validation -->
 <script>
