@@ -112,7 +112,7 @@
 						<article id="contact">
 							<h2 class="major">Contact</h2>
 							<div id="error-message" style="color: red;"></div> <!-- Error message container -->
-							<form id="contactForm" action="https://formspree.io/f/xyzyzvlw" method="POST">
+							<form id="contactForm"  method="POST">
 								<div class="fields">
 									<div class="field half">
 										<label for="name">Name</label>
@@ -132,6 +132,8 @@
 									<li><input type="reset" value="Reset" /></li>
 								</ul>
 							</form>
+							<p id="successMessage" style="display:none; color: green;">Message sent successfully!</p>
+    <p id="errorMessage" style="display:none; color: red;">There was an error sending your message. Please try again later.</p>
 						</article>
 						
 

@@ -65,9 +65,32 @@
     }
 
     // Attach form validation to form submission
-    document.getElementById('contactForm').onsubmit = function() {
-        return validateForm();
-    };
+    document.getElementById("contactForm").addEventListener("submit", async function (event) {
+		event.preventDefault();  // Prevent the default form submission
+	
+		// Get form data
+		const formData = new FormData(this);
+	
+		// Send the form data to Formspree via Fetch API
+		const response = await fetch("https://formspree.io/f/xyzyzvlw", {
+			method: "POST",
+			body: formData,
+			headers: {
+				'Accept': 'application/json'
+			}
+		});
+	
+		// Check if the submission was successful
+		if (response.ok) {
+			document.getElementById("successMessage").style.display = "block";  // Show success message
+			document.getElementById("errorMessage").style.display = "none";     // Hide error message if displayed
+			document.getElementById("contactForm").reset();  // Reset the form
+		} else {
+			document.getElementById("successMessage").style.display = "none";  // Hide success message if displayed
+			document.getElementById("errorMessage").style.display = "block";   // Show error message
+		}
+	});
+	
 
     // Nav.
     var $nav = $header.children('nav'),
