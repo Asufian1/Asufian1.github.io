@@ -734,7 +734,7 @@ input, select, textarea {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 10px; /* Adjust margin as needed */
+    margin: 20px; /* Adjust margin as needed */
 }
 
 .profile-picture {
