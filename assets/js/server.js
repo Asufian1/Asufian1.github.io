@@ -1,30 +1,36 @@
-require('dotenv').config();
+// server.js
 const express = require('express');
-const axios = require('axios');
+const fetch = require('node-fetch');
+require('dotenv').config();
 
 const app = express();
-const PORT = 3000;
-
 app.use(express.json());
 
+const apiKey = process.env.OPENAI_API_KEY;
+
 app.post('/api/chat', async (req, res) => {
+    const message = req.body.message;
+
     try {
-        const response = await axios.post(
-            'https://api.openai.com/v1/engines/davinci-codex/completions',
-            req.body,
-            {
-                headers: {
-                    'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-                    'Content-Type': 'application/json'
-                }
-            }
-        );
-        res.json(response.data);
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+                model: "gpt-3.5-turbo",
+                messages: [{ role: "user", content: message }]
+            })
+        });
+        const data = await response.json();
+        res.json(data);
     } catch (error) {
-        res.status(500).send("Error communicating with OpenAI API");
+        console.error(error);
+        res.status(500).json({ error: "Something went wrong" });
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+app.listen(3000, () => {
+    console.log("Server is running on http://localhost:3000");
 });
