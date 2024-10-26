@@ -91,48 +91,48 @@
 		}
 	});
 
-	document.addEventListener("DOMContentLoaded", function () {
-		// Assuming you're using Node.js or a frontend bundler that can handle environment variables.
-		const apiKey = process.env.OPENAI_API_KEY;
+// 	document.addEventListener("DOMContentLoaded", function () {
+// 		// Assuming you're using Node.js or a frontend bundler that can handle environment variables.
+// 		const apiKey = process.env.OPENAI_API_KEY;
 
-		// Add event listener to the chatbox button
-		const chatboxButton = document.querySelector("#chatbox button");
-		const chatboxInput = document.getElementById("chatbox-input");
+// 		// Add event listener to the chatbox button
+// 		const chatboxButton = document.querySelector("#chatbox button");
+// 		const chatboxInput = document.getElementById("chatbox-input");
 	
-		chatboxButton.addEventListener("click", sendMessage);
-	async function sendMessage() {
-		const input = document.getElementById("chatbox-input");
-		const message = input.value;
-		if (message.trim() === "") return;
+// 		chatboxButton.addEventListener("click", sendMessage);
+// 	async function sendMessage() {
+// 		const input = document.getElementById("chatbox-input");
+// 		const message = input.value;
+// 		if (message.trim() === "") return;
 	
-		// Display user message
-		displayMessage("You", message);
-		input.value = "";
+// 		// Display user message
+// 		displayMessage("You", message);
+// 		input.value = "";
 	
-		// Fetch response from your backend server instead of OpenAI directly
-		const response = await fetch("http://localhost:3000/api/chat", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify({ message })
-		});
+// 		// Fetch response from your backend server instead of OpenAI directly
+// 		const response = await fetch("http://localhost:3000/api/chat", {
+// 			method: "POST",
+// 			headers: {
+// 				"Content-Type": "application/json"
+// 			},
+// 			body: JSON.stringify({ message })
+// 		});
 	
-		const data = await response.json();
-		const botMessage = data.choices[0].message.content;
+// 		const data = await response.json();
+// 		const botMessage = data.choices[0].message.content;
 	
-		// Display bot response
-		displayMessage("Bot", botMessage);
-	}
+// 		// Display bot response
+// 		displayMessage("Bot", botMessage);
+// 	}
 	
-	function displayMessage(sender, message) {
-		const messageContainer = document.getElementById("chatbox-messages");
-		const messageDiv = document.createElement("div");
-		messageDiv.innerHTML = `<strong>${sender}:</strong> ${message}`;
-		messageContainer.appendChild(messageDiv);
-		messageContainer.scrollTop = messageContainer.scrollHeight;
-	}
-});
+// 	function displayMessage(sender, message) {
+// 		const messageContainer = document.getElementById("chatbox-messages");
+// 		const messageDiv = document.createElement("div");
+// 		messageDiv.innerHTML = `<strong>${sender}:</strong> ${message}`;
+// 		messageContainer.appendChild(messageDiv);
+// 		messageContainer.scrollTop = messageContainer.scrollHeight;
+// 	}
+// });
 
     // Nav.
     var $nav = $header.children('nav'),
