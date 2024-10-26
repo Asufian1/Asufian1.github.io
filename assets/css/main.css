@@ -738,8 +738,8 @@ input, select, textarea {
 }
 
 .profile-picture {
-    width: 150px; /* Set a fixed width */
-    height: 150px; /* Set a fixed height */
+    width: 250px; /* Set a fixed width */
+    height: 250px; /* Set a fixed height */
     border-radius: 50%; /* Make it circular */
     object-fit: cover; /* Ensure the image fills the circle without distortion */
     display: block;
