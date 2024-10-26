@@ -745,7 +745,7 @@ input, select, textarea {
     display: block;
     margin: 0 auto; /* Center it */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow */
-    max-width: 100%; /* Ensure it does not exceed its container */
+    max-width: 150%; /* Ensure it does not exceed its container */
 }
 
 
