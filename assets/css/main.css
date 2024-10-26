@@ -734,11 +734,11 @@ input, select, textarea {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 20px; /* Adjust margin as needed */
+    margin: 10px; /* Adjust margin as needed */
 }
 
 .profile-picture {
-    width: 200px; /* Adjust width as needed */
+    width: 100px; /* Adjust width as needed */
     height: auto; /* Keeps the aspect ratio */
     border-radius: 50%; /* Makes it circular, remove if you want a square shape */
     object-fit: cover; /* Ensures the image fits within the bounds without distortion */
