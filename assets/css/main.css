@@ -738,12 +738,16 @@ input, select, textarea {
 }
 
 .profile-picture {
-    width: 100px; /* Adjust width as needed */
-    height: auto; /* Keeps the aspect ratio */
-    border-radius: 50%; /* Makes it circular, remove if you want a square shape */
-    object-fit: cover; /* Ensures the image fits within the bounds without distortion */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow */
+    width: 150px; /* Set a fixed width */
+    height: 150px; /* Set a fixed height */
+    border-radius: 50%; /* Make it circular */
+    object-fit: cover; /* Ensure the image fills the circle without distortion */
+    display: block;
+    margin: 0 auto; /* Center it */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow */
+    max-width: 100%; /* Ensure it does not exceed its container */
 }
+
 
 
 
@@ -1526,6 +1530,15 @@ input, select, textarea {
 					display: none;
 				}
 
+				#header .content .inner {
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					text-align: center;
+					padding-top: 20px; /* Add space at the top if needed */
+					gap: 10px; /* Space between the image and text */
+				}
+						
 		}
 
 /* Main */
