@@ -1732,3 +1732,12 @@ input, select, textarea {
 		body.is-preload #footer {
 			opacity: 0;
 		}
+
+
+		#footer {
+			position: relative;
+			z-index: 2;
+			text-align: center;
+			margin: 2rem 0;
+		  }
+		  
